@@ -1,0 +1,35 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:h="http://java.sun.com/jsf/html">
+<h:head>
+	<meta http-equiv="content-type" content="text/html; charset=utf-8" />
+	<title>Ingreso al sistema</title>
+	<link rel="shortcut icon" type="image/x-icon" href="resources/img/favicon.ico" />
+	<h:outputStylesheet library="css" name="estilos.css" />
+</h:head> 
+<h:body styleClass="back"> 
+		<div class="wrapper">
+	       <div class="loginForm">
+           	<div class="form-top">
+           		<center><p:graphicImage styleClass="imgResp" value="#{facesContex}/resources/img/logo.png" /></center>
+             </div>
+             <div class="form-bottom">
+	             <h:form id="frmlog">
+	             	<p:growl/>
+	             	<div class="ui-fluid">
+	             		<p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank">
+					    	<p:inputText placeholder="Usuario" value="#{sesionBean.alias}"/>
+					    	<p:password placeholder="Contraseña" value="#{sesionBean.pass}"/>
+					    	<p:commandButton value="Ingresar al sistema" icon="ui-icon-extlink" iconPos="rigth"
+					    		action="#{sesionBean.logIn()}" update="frmlog"/>
+					    </p:panelGrid>
+	             	</div>
+	             </h:form>
+             </div>
+	       </div>
+		</div>
+</h:body> 
+</html>

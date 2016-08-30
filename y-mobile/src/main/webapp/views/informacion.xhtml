@@ -1,0 +1,213 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<ui:composition template="template.xhtml">
+		<ui:define name="titulo">
+            &Iacute;tem Servicio
+        </ui:define>
+		<ui:define name="contenido">
+			<h:form id="frmList">
+				<div class="ui-fluid">
+				    <p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" style="margin-top:20px;"
+				    	styleClass="ui-panelgrid-blank" rendered="#{!itemBean.abrirFrm}">
+				    	<center><span class="titulo">Informaci&oacute;n &Iacute;tems</span></center>
+				    </p:panelGrid>
+				    <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-2" 
+					    	layout="grid" styleClass="ui-panelgrid-blank" rendered="#{!itemBean.abrirFrm}">
+					    	<p:commandButton value="Nuevo" actionListener="#{itemBean.nuevo()}" update="frmList :outPanel"/>
+					    	<p:commandButton value="Volver" action="index?faces-redirect=true" icon="ui-icon-carat-1-w" />
+					</p:panelGrid>		    
+				</div>
+			    <br/>
+			    <p:messages rendered="#{!itemBean.abrirFrm}" closable="true"/>
+				<p:panel header="Listado" rendered="#{!itemBean.abrirFrm}">
+					<p:dataTable var="inf" value="#{itemBean.informacionList}" style="margin-top:20px" emptyMessage="Sin datos" 
+						reflow="true" paginator="true" rows="10">
+						<p:column headerText="Opciones">
+					        <p:commandButton icon="ui-icon-pencil" actionListener="#{itemBean.cargarDatosInformacion(inf)}" update="frmList :outPanel"/>
+					    </p:column>
+					    
+					    <p:column headerText="Orden">
+					        <h:outputText value="#{inf.infOrden}" />
+					    </p:column>
+					    
+					    <p:column headerText="T&iacute;tulo" filterBy="#{inf.infTitulo}" filterMatchMode="contains">
+					        <h:outputText value="#{inf.infTitulo}" />
+					    </p:column>
+					    
+					    <p:column headerText="Categor&iacute;a">
+					        <h:outputText value="#{inf.infCategoria.catTitulo}" />
+					    </p:column>
+					    
+					    <p:column headerText="Descripci&oacute;n">
+					        <h:outputText value="${fn:substring(inf.infDescripcion, 0, 80)}" />
+					    </p:column>
+					    					    
+					    <p:column headerText="Estado">
+					        <h:outputText value="#{itemBean.valorItem(inf.infEstado)}" style="color:#{itemBean.pintar(inf.infEstado)}"/>
+					    </p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+			<p:outputPanel id="outPanel" >
+				<h:form id="frmBtns">
+					<div class="ui-fluid">
+					    <p:panelGrid columns="1" columnClasses="ui-grid-col-2" layout="grid" styleClass="ui-panelgrid-blank" 
+					    	rendered="#{itemBean.abrirFrm}">
+							    <p:commandButton value="Volver" update=":frmIM:panelFrm :frmImg:panelImg :frmList :outPanel" 
+							    	process="@this" icon="ui-icon-carat-1-w" >
+					               <p:resetInput target=":frmIM:panelFrm :frmImg:panelImg" />
+					               <f:actionListener binding="#{itemBean.volver()}"/>
+					           </p:commandButton>
+						</p:panelGrid>	    
+					</div>
+				</h:form>
+				<br/>
+				<h:form id="frmGrowl">
+					<p:growl id="msj" showDetail="true"/>
+				</h:form>
+				<h:form id="frmIM">
+					<p:messages closable="true" rendered="#{itemBean.abrirFrm}"/>
+					<p:panel id="panelFrm" header="Datos de Informaci&oacute;n" rendered="#{itemBean.abrirFrm}" toggleable="true" toggleSpeed="500">
+						<div class="ui-fluid">
+						    <p:panelGrid columns="4" columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4" 
+						    	layout="grid" styleClass="ui-panelgrid-blank">
+						        <p:outputLabel value="C&oacute;digo:" rendered="#{itemBean.edicion}" />
+						        <p:inputText value="#{itemBean.codigo}" disabled="true" rendered="#{itemBean.edicion}" />
+								<p:outputLabel value="T&iacute;tulo:"/>
+						        <p:inputText value="#{itemBean.titulo}" maxlength="50"/>
+						        <p:outputLabel value="Servicio:"/>
+						        <p:selectOneMenu value="#{itemBean.categoriaId}" filter="true" filterMatchMode="contains">
+						        	<p:ajax listener="#{itemBean.sugerirOrden()}" update="or"/>
+						        	<f:selectItems value="#{itemBean.categoriasList}"/>
+						        </p:selectOneMenu>
+						        <p:outputLabel value="Descripci&oacute;n:"/>
+						        <p:inputTextarea value="#{itemBean.descripcion}" />
+						        <p:outputLabel value="Orden:"/>
+						        <p:inputText id="or" value="#{itemBean.orden}" />
+						        <p:outputLabel value="Estado:" rendered="#{itemBean.edicion}"/>
+						        <p:selectOneMenu value="#{itemBean.estado}" rendered="#{itemBean.edicion}" >
+						        	<f:selectItems value="#{itemBean.estadosList}"/>
+						        </p:selectOneMenu>
+						    </p:panelGrid>
+						    <p:panelGrid id="pOptionsFecha" columns="4" columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-1, ui-grid-col-4" 
+						    	layout="grid" styleClass="ui-panelgrid-blank">
+						    	<p:outputLabel value="¿Posee fecha de creaci&oacute;n de entrada?"/>
+						        <p:selectOneRadio value="#{itemBean.poseeFecha}">
+						        	<p:ajax update="pOptionsFecha" event="valueChange" listener="#{itemBean.defaultFecha()}"/>
+						            <f:selectItem itemLabel="Si" itemValue="true" />
+						            <f:selectItem itemLabel="No" itemValue="false" />
+						        </p:selectOneRadio>
+						        <p:outputLabel value="Fecha:" rendered="#{itemBean.poseeFecha}"/>
+						        <p:calendar value="#{itemBean.fecha}" rendered="#{itemBean.poseeFecha}" pattern="dd/MM/yyyy" 
+						        	mask="true" navigator="true" locale="ec" showOn="button"/>
+						        <p:outputLabel value="" rendered="#{!itemBean.poseeFecha}"/>
+						        <p:outputLabel value="" rendered="#{!itemBean.poseeFecha}"/>
+						    </p:panelGrid>
+						    <p:panelGrid id="pOptionsLink" columns="4" columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-1, ui-grid-col-4" 
+						    	layout="grid" styleClass="ui-panelgrid-blank">
+						        <p:outputLabel value="¿Posee Leer más?"/>
+						        <p:selectOneRadio value="#{itemBean.poseeLink}">
+						        	<p:ajax update="pOptionsLink" event="valueChange" listener="#{itemBean.defaultLink()}"/>
+						            <f:selectItem itemLabel="Si" itemValue="true" />
+						            <f:selectItem itemLabel="No" itemValue="false" />
+						        </p:selectOneRadio>
+						        <p:outputLabel value="Link:" rendered="#{itemBean.poseeLink}"/>
+						        <p:inputTextarea value="#{itemBean.leerMas}" rendered="#{itemBean.poseeLink}"/>
+						        <p:outputLabel value="" rendered="#{!itemBean.poseeLink}"/>
+						        <p:outputLabel value="" rendered="#{!itemBean.poseeLink}"/>
+						    </p:panelGrid>
+						    <p:panelGrid id="pOptionsMap" columns="4" columnClasses="ui-grid-col-2, ui-grid-col-2, ui-grid-col-1, ui-grid-col-4" 
+						    	layout="grid" styleClass="ui-panelgrid-blank">
+						        <p:outputLabel value="¿Posee ubicaci&oacute;n en el mapa?"/>
+						        <p:selectOneRadio value="#{itemBean.poseeMapa}">
+						        	<p:ajax update="pOptionsMap pMap" event="valueChange" listener="#{itemBean.defaultMapa()}"/>
+						            <f:selectItem itemLabel="Si" itemValue="true" />
+						            <f:selectItem itemLabel="No" itemValue="false" />
+						        </p:selectOneRadio>
+						    </p:panelGrid>
+						    <p:panelGrid id="pMap" columns="1" columnClasses="ui-grid-col-12" layout="grid" styleClass="ui-panelgrid-blank">
+   				 				<p:gmap id="gmap" center="0.4029181172908282,-78.1750899553299" zoom="15" 
+   				 					type="HYBRID" style="width:100%;height:400px"  model="#{itemBean.draggableModel}" 
+   				 					rendered="#{itemBean.poseeMapa}">
+									<p:ajax event="markerDrag" listener="#{itemBean.onMarkerDrag}" update=":frmGrowl" />
+								</p:gmap>
+						    </p:panelGrid>
+							<p:panelGrid columns="1" columnClasses="ui-grid-col-2" 
+							    	layout="grid" styleClass="ui-panelgrid-blank">
+							    	<p:commandButton value="Guardar" actionListener="#{itemBean.guardarEditarInformacion()}" update="frmIM :outImg"/>
+							</p:panelGrid>
+						</div>
+					</p:panel>
+				</h:form>
+				<br/>
+				<p:panel id="outImg" header="Im&aacute;genes pertenecientes" rendered="#{itemBean.abrirFrm}">
+				<h:form id="frmListImg">
+					<div class="ui-fluid">
+					    <p:panelGrid columns="1" columnClasses="ui-grid-col-2" layout="grid"
+					    	styleClass="ui-panelgrid-blank" rendered="#{!itemBean.abrirFrmImg}">
+					    	<p:commandButton value="A&ntilde;adir imagen" disabled="#{!itemBean.creado}" 
+					    		actionListener="#{itemBean.nuevaImagen()}" update=":outImg"/>
+					    </p:panelGrid>
+				    </div>
+					<p:messages rendered="#{!itemBean.abrirFrmImg}" closable="true"/>
+					<p:dataTable var="img" value="#{itemBean.imagenList}" style="margin-top:20px" emptyMessage="Sin datos" 
+						reflow="true" paginator="true" rows="4" rendered="#{!itemBean.abrirFrmImg}">
+						<p:column headerText="Opciones" width="150">
+					        <p:commandButton icon="ui-icon-pencil" actionListener="#{itemBean.cargarDatosImagen(img)}" update=":outImg"/>
+					        <p:commandButton icon="ui-icon-zoomin" actionListener="#{itemBean.verImagenSeleccionada(img)}" 
+					        	oncomplete="PF('dlg').show();" update=":frmsi"/>
+					    </p:column>
+					    
+					    <p:column headerText="C&oacute;digo" width="150">
+					        <h:outputText value="#{img.imaCodigo}" />
+					    </p:column>
+					    
+					    <p:column headerText="Orden" width="150">
+					        <h:outputText value="#{img.imaOrden}" />
+					    </p:column>
+					    
+					    <p:column headerText="URL">
+					        <h:outputText value="#{img.imaDireccion}" />
+					    </p:column>
+					</p:dataTable>
+				</h:form>
+				<h:form id="frmImg">
+					<p:messages rendered="#{itemBean.abrirFrmImg}" closable="true"/>
+					<div class="ui-fluid">
+					    <p:panelGrid id="panelImg" columns="4" columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4" layout="grid" styleClass="ui-panelgrid-blank" 
+					    	rendered="#{itemBean.abrirFrmImg}">
+						    	<p:outputLabel value="Direcci&oacute;n URL:" />
+						    	<p:inputTextarea value="#{itemBean.imagenDireccion}" 
+						    		required="true" requiredMessage="Campo URL requerido"/>
+						    	<p:outputLabel value="Orden:" />
+						    	<p:inputText value="#{itemBean.imagenOrden}"/>
+						</p:panelGrid>	
+						<p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-2" layout="grid" styleClass="ui-panelgrid-blank" 
+					    	rendered="#{itemBean.abrirFrmImg}">
+						    	<p:commandButton value="Guardar" actionListener="#{itemBean.guardarEditarImagen()}" update="frmImg :outImg"/>
+							    <p:commandButton value="Cancelar" update="panelImg :outImg" process="@this">
+					                <p:resetInput target="panelImg" />
+					                <f:actionListener binding="#{itemBean.limpiarDatosImagen()}"/>
+					            </p:commandButton>
+						</p:panelGrid>    
+					</div>
+				</h:form>
+			</p:panel>
+			</p:outputPanel>
+			<p:dialog widgetVar="dlg" showEffect="fade" closable="true" resizable="false">
+				<h:form id="frmsi">
+					<p:graphicImage value="#{itemBean.urlImgSeleccionada}" width="546" height="307"/>
+				</h:form>
+			</p:dialog>
+			<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDpF74XSYlYwphoxT-x6pMEIwmIO7PS9e0"></script>
+		</ui:define>
+	</ui:composition>
+</html>

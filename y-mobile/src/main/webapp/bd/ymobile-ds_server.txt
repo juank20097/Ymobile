@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<datasources xmlns="http://www.jboss.org/ironjacamar/schema">
+    <datasource 
+        jndi-name="ymobileDatasource"
+        enabled="true" 
+        use-java-context="true" 
+        pool-name="ymobilePool">
+        <connection-url>jdbc:postgresql://10.1.0.158:5432/ymobile</connection-url>
+        <driver>postgresql-9.4.1207.jre7.jar</driver>
+        <pool>
+            <min-pool-size>10</min-pool-size>
+            <max-pool-size>50</max-pool-size>
+            <prefill>false</prefill>
+        </pool>
+        <security>
+            <user-name>adm_bicichay</user-name>
+            <password>y-4IO4SDwu_!</password>
+        </security>
+        <validation>
+            <check-valid-connection-sql>SELECT 1</check-valid-connection-sql>
+            <valid-connection-checker
+                class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLValidConnectionChecker">
+            </valid-connection-checker>
+            <exception-sorter
+                class-name="org.jboss.jca.adapters.jdbc.extensions.postgres.PostgreSQLExceptionSorter">
+            </exception-sorter>
+        </validation>
+
+    </datasource>
+</datasources>
+

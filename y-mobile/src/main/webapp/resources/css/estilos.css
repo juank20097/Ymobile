@@ -1,0 +1,66 @@
+
+.wrapper{
+	/**max-width: 1170px;**/
+	max-width: 1170px;
+	margin: 0 auto;
+}
+
+.textoItalico{
+	font-style: italic;
+}
+
+.ui-panelgrid td,.ui-panelgrid tr {
+	border-style: none !important;
+}
+
+.titulo{
+    font-size: 40px;
+    color: #fff;
+    text-shadow: 2px 2px #00ADDC;
+}
+
+.imgResp{
+	max-width:100% !important;
+    height:auto;
+    display:block;
+}
+
+/**LOGIN**/
+.back{
+	font-size: 75%;
+	background: #fff; /* fallback for old browsers abbaab */
+	background: -webkit-linear-gradient(to left, #00ADDC , #ffffff); /* Chrome 10-25, Safari 5.1-6 */
+	background: linear-gradient(to left, #00ADDC , #ffffff); /* W3C, IE 10+/ Edge, Firefox 16+, Chrome 26+, Opera 12+, Safari 7+ */
+}
+
+
+.loginForm{
+	max-width: 500px;
+	margin: 0 auto;
+	margin-top: 10%;
+}
+
+
+.form-top {
+	overflow: hidden;
+	padding: 25px 25px 15px 25px;
+	background: #fff;
+	-moz-border-radius: 4px 4px 0 0; -webkit-border-radius: 4px 4px 0 0; border-radius: 4px 4px 0 0;
+}
+
+.form-bottom {
+	padding: 25px 25px 30px 25px;
+	background: #eee;
+	-moz-border-radius: 0 0 4px 4px; -webkit-border-radius: 0 0 4px 4px; border-radius: 0 0 4px 4px;
+}
+
+/**PRIMEFACES**/
+.ui-button, .ui-button span, button.ui-button.ui-state-default span, .ui-button.ui-state-default span {
+    font-weight: normal;
+}
+
+#owl-demo .item img{
+    display: block;
+    width: 100%;
+    height: auto;
+}

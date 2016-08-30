@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+	xmlns:h="http://java.sun.com/jsf/html"
+	xmlns:p="http://primefaces.org/ui"
+	xmlns:f="http://java.sun.com/jsf/core"
+	xmlns:ui="http://java.sun.com/jsf/facelets"
+	xmlns:c="http://java.sun.com/jsp/jstl/core"
+	xmlns:fn="http://java.sun.com/jsp/jstl/functions">
+
+	<ui:composition template="template.xhtml">
+		<ui:define name="titulo">
+            Gesti&oacute;n de Servicios
+        </ui:define>
+		<ui:define name="contenido">
+			<h:form id="frmList">
+				<div class="ui-fluid">
+				    <p:panelGrid columns="1" columnClasses="ui-grid-col-12" layout="grid" style="margin-top:20px;"
+				    	styleClass="ui-panelgrid-blank" rendered="#{!servicioBean.abrirFrm}">
+				    	<center><span class="titulo">Servicios</span></center>
+				    </p:panelGrid>
+				    <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-2" 
+					    	layout="grid" styleClass="ui-panelgrid-blank" rendered="#{!servicioBean.abrirFrm}">
+					    	<p:commandButton value="Nuevo" actionListener="#{servicioBean.nuevo()}" update="frmList :frmIM"/>
+					    	<p:commandButton value="Volver" action="index?faces-redirect=true" icon="ui-icon-carat-1-w" />
+					</p:panelGrid>		    
+				</div>
+			    <br/>
+			    <p:growl rendered="#{!servicioBean.abrirFrm}"/>
+				<p:panel header="Listado" rendered="#{!servicioBean.abrirFrm}">
+					<p:dataTable var="op" value="#{servicioBean.serviciosList}" style="margin-top:20px" emptyMessage="Sin datos" 
+						reflow="true" paginator="true" rows="10">
+						<p:column headerText="Opciones">
+					        <p:commandButton icon="ui-icon-pencil" actionListener="#{servicioBean.cargarDatos(op)}" update="frmList :frmIM"/>
+					    </p:column>
+					    
+					    <p:column headerText="Orden">
+					        <h:outputText value="#{op.catOrden}" />
+					    </p:column>
+					    
+					    <p:column headerText="T&iacute;tulo" filterBy="#{op.catTitulo}" filterMatchMode="contains">
+					        <h:outputText value="#{op.catTitulo}" />
+					    </p:column>
+					    
+					    <p:column headerText="Descripci&oacute;n">
+					        <h:outputText value="${fn:substring(op.catDescripcion, 0, 80)}" />
+					    </p:column>
+					    
+					    <p:column headerText="Icono">
+					        <h:outputText value="#{servicioBean.valorItem(op.catIcon)}" />
+					    </p:column>
+					    
+					    <p:column headerText="Estado">
+					        <h:outputText value="#{servicioBean.valorItem(op.catEstado)}" style="color:#{servicioBean.pintar(op.catEstado)}"/>
+					    </p:column>
+					</p:dataTable>
+				</p:panel>
+			</h:form>
+			<br/>
+			<h:form id="frmIM">
+				<p:messages closable="true" rendered="#{servicioBean.abrirFrm}"/>
+				<p:panel header="Datos de Servicio" rendered="#{servicioBean.abrirFrm}">
+					<div class="ui-fluid">
+					    <p:panelGrid id="panel" columns="4" columnClasses="ui-grid-col-2, ui-grid-col-4, ui-grid-col-2, ui-grid-col-4" 
+					    	layout="grid" styleClass="ui-panelgrid-blank">
+					        <p:outputLabel value="C&oacute;digo:" rendered="#{servicioBean.edicion}" />
+					        <p:inputText value="#{servicioBean.id}" disabled="true" rendered="#{servicioBean.edicion}" />
+							<p:outputLabel value="T&iacute;tulo:"/>
+					        <p:inputText value="#{servicioBean.titulo}" maxlength="50" />
+					        <p:outputLabel value="Descripci&oacute;n:"/>
+					        <p:inputTextarea value="#{servicioBean.descripcion}" maxlength="50" />
+					        <p:outputLabel value="Orden:"/>
+					        <p:inputText value="#{servicioBean.orden}"/>
+					        <p:outputLabel value="Icono:"/>
+					        <p:selectOneMenu value="#{servicioBean.icono}" filter="true" filterMatchMode="contains">
+					        	<f:selectItems value="#{servicioBean.iconosList}"/>
+					        </p:selectOneMenu>
+					        <p:outputLabel value="Estado:" rendered="#{servicioBean.edicion}"/>
+					        <p:selectOneMenu value="#{servicioBean.estado}" rendered="#{servicioBean.edicion}" >
+					        	<f:selectItems value="#{servicioBean.estadosList}"/>
+					        </p:selectOneMenu>
+					    </p:panelGrid>
+					    <p:panelGrid columns="2" columnClasses="ui-grid-col-2, ui-grid-col-2" 
+						    	layout="grid" styleClass="ui-panelgrid-blank">
+						    	<p:commandButton value="Guardar" actionListener="#{servicioBean.guardarEditar()}" update="frmIM :frmList"/>
+						    	<p:commandButton value="Cancelar" actionListener="#{servicioBean.limpiarDatos()}" update="frmIM :frmList" process="@this">
+						    		<p:resetInput target="panel" />
+						    	</p:commandButton>
+						</p:panelGrid>
+					</div>
+				</p:panel>
+			</h:form>
+		</ui:define>
+	</ui:composition>
+</html>

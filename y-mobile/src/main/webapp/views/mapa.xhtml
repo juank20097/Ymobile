@@ -1,0 +1,74 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:h="http://java.sun.com/jsf/html"
+      xmlns:f="http://java.sun.com/jsf/core"
+      xmlns:ui="http://java.sun.com/jsf/facelets"
+      xmlns:p="http://primefaces.org/ui">
+	<h:head>
+		<title>Mapa</title>
+	</h:head>
+	<h:body>
+		<p:growl id="messages" />
+ 
+		<p:gmap id="gmap" center="0.4029181172908282,-78.1750899553299" zoom="15" type="HYBRID" style="width:100%;height:400px"
+   				 model="#{mobileBean.emptyModel}" onPointClick="handlePointClick(event);" widgetVar="map" />
+   		
+   		<p:outputLabel id="out">
+   			<p:outputLabel value="#{mobileBean.lat}" />&nbsp;&nbsp;
+   			<p:outputLabel value="#{mobileBean.lng}" />
+   		</p:outputLabel>		 
+   		
+   		
+   		<p:dialog widgetVar="dlg" showEffect="fade" closable="False">
+		    <h:form id="frm" prependId="false">
+		        <h:panelGrid columns="2">
+		            <h:outputLabel for="title" value="Seguro agregar la ubicación?" />		 
+		            <f:facet name="footer">
+		                <p:commandButton value="Aceptar" actionListener="#{mobileBean.addMarker()}" update=":messages :out" 
+		                	oncomplete="markerAddComplete()" />
+		                <p:commandButton value="Cancelar" actionListener="#{mobileBean.limpiarDatos()}" oncomplete="cancel()" update="frm :out"/>
+		            </f:facet>
+		            <h:inputHidden id="lat" value="#{mobileBean.lat}" />
+        			<h:inputHidden id="lng" value="#{mobileBean.lng}" />
+		        </h:panelGrid>
+		    </h:form>
+		</p:dialog>		 
+		
+		<script src="http://maps.googleapis.com/maps/api/js?key=AIzaSyDpF74XSYlYwphoxT-x6pMEIwmIO7PS9e0"></script>
+		<script type="text/javascript">
+		    var currentMarker = null;
+		 			 	
+		    function handlePointClick(event) {
+		        if(currentMarker === null) {
+		       	    PF('map')._render();
+		       	        
+		            document.getElementById('lat').value = event.latLng.lat();
+		            document.getElementById('lng').value = event.latLng.lng();
+		 	
+		            currentMarker = new google.maps.Marker({
+		                position:new google.maps.LatLng(event.latLng.lat(), event.latLng.lng())
+		            });
+		            
+		 
+		            PF('map').addOverlay(currentMarker);
+		 
+		            PF('dlg').show();
+		        }   
+		    }
+		 
+		    function markerAddComplete() {   			 
+		        currentMarker = null;
+		        PF('dlg').hide();
+		    }
+		 
+		    function cancel() {
+		        PF('dlg').hide();
+		        currentMarker.setMap(null);
+		        currentMarker = null;
+		        return false;
+		    }
+		    
+		</script>
+		
+	</h:body>
+</html>
